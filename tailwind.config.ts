@@ -7,11 +7,24 @@ const config: Config = {
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
+    colors: {
+      transparent: "transparent",
+      current: "currentColor",
+      primary: "#28BCBE",
+      secondary: "#DEF7F7",
+      "background-primary": "#fff",
+      white: "#fff",
+      "white-primary": "#DEF7F7",
+      "black-primary": "#104242",
+    },
     extend: {
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+      },
+      fontFamily: {
+        yekan: ["var(--font-iran-yekan)"],
       },
     },
   },
