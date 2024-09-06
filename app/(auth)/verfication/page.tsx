@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import VerficationTitle from "./components/verfication/VerficationTitle";
 import VerficationData from "./components/verfication/VerficatoinData";

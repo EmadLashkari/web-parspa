@@ -6,6 +6,7 @@ import Avatar from "@/public/image/Avatar.svg";
 import Select from "@/components/tools/input/Select";
 import TextArea from "@/components/tools/input/TextArea";
 import { fetchData } from "@/utils/fetch";
+import getHeaders from "@/utils/getHeaders";
 
 type profileType = {
   address: string;
@@ -19,7 +20,7 @@ type profileType = {
 };
 
 function Profile() {
-  const token = localStorage.getItem("token");
+  const token = typeof window !== "undefined" && localStorage.getItem("token");
   const profile = useRef<profileType>();
   useEffect(() => {
     getProfile();
@@ -29,7 +30,7 @@ function Profile() {
       const res = fetchData("/user/profile", {
         method: "get",
         headers: {
-          origin: location.hostname ?? "",
+          origin: getHeaders(),
           Authorization: `Bearer ${token}`,
         },
       })

@@ -15,6 +15,7 @@ import ankle from "@/public/image/pichkhordegi.jpg";
 import { Carousel } from "antd";
 import { fetchData } from "@/utils/fetch";
 import { useRouter } from "next/navigation";
+import getHeaders from "@/utils/getHeaders";
 
 type CardItem = {
   title: string;
@@ -90,7 +91,8 @@ export default function Home() {
   const router = useRouter();
   const [show, setShow] = useState(0);
   const list = useRef<orderData>();
-  const token = localStorage.getItem("token");
+
+  const token = typeof window !== "undefined" && localStorage.getItem("token");
   if (!token) {
     router.push("/login");
   }
@@ -110,7 +112,7 @@ export default function Home() {
       method: "get",
       headers: {
         "Content-Type": "application/json",
-        origin: location.hostname ?? "",
+        origin: getHeaders(),
         Authorization: `Bearer ${token}`,
       },
     })

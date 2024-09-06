@@ -7,6 +7,7 @@ import Image from "next/image";
 import { fetchData } from "@/utils/fetch";
 import { UploadRequestOption } from "rc-upload/lib/interface";
 import { TickCircle } from "iconsax-react";
+import getHeaders from "@/utils/getHeaders";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
@@ -40,7 +41,7 @@ const FileInput = ({
   const [loading, setLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState<string>();
 
-  const token = localStorage.getItem("token");
+  const token = typeof window !== "undefined" && localStorage.getItem("token");
 
   const handleChange: UploadProps["onChange"] = (info) => {
     if (info.file.status === "uploading") {
@@ -59,7 +60,7 @@ const FileInput = ({
       fetchData(`/upload/pic/${localStorage.getItem(imgTitle)}`, {
         method: "get",
         headers: {
-          origin: location.hostname ?? "",
+          origin: getHeaders(),
           Authorization: `Bearer ${token}`,
         },
       })
@@ -94,7 +95,7 @@ const FileInput = ({
         method: "post",
         headers: {
           "Content-Type": "multipart/form-data",
-          origin: location.hostname ?? "",
+          origin: getHeaders(),
           Authorization: `Bearer ${token}`,
         },
         data: formData,

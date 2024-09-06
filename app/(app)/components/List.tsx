@@ -20,7 +20,7 @@ export default function List({
     weight: number;
   }[];
 }) {
-  const token = localStorage.getItem("token");
+  const token = typeof window !== "undefined" && localStorage.getItem("token");
   const router = useRouter();
   if (token) {
     return (

@@ -1,3 +1,4 @@
+"use client";
 import LoginData from "./components/login/LoginData";
 import Title from "./components/login/Title";
 

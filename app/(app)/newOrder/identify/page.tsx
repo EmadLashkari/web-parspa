@@ -7,6 +7,7 @@ import { fetchData } from "@/utils/fetch";
 import Link from "next/link";
 import { Modal } from "antd";
 import { useRouter } from "next/navigation";
+import getHeaders from "@/utils/getHeaders";
 
 const identifyFoot = [
   {
@@ -43,13 +44,13 @@ export default function Identify() {
   const route = useRouter();
   const checkedBox = useRef<number[]>([]);
   const notes = useRef<string>();
-  const token = localStorage.getItem("token");
+  const token = typeof window !== "undefined" && localStorage.getItem("token");
   function sendOrder() {
     try {
       const res = fetchData("/orders/new", {
         method: "post",
         headers: {
-          origin: location.hostname ?? "",
+          origin: getHeaders(),
           Authorization: `Bearer ${token}`,
         },
         data: {

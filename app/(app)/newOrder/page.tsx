@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import Steps from "./components/Steps";
 import UploadFoot from "./components/UploadFoot";

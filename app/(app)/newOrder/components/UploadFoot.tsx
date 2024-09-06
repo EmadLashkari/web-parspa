@@ -26,7 +26,9 @@ function UploadFoot() {
           max={50}
           onChange={(e) => {
             setFootSize(e.target.value);
-            localStorage.setItem("feetLenght", e.target.value);
+            if (typeof window !== "undefined") {
+              localStorage.setItem("feetLenght", e.target.value);
+            }
           }}
           value={footSize}
         />
@@ -41,7 +43,9 @@ function UploadFoot() {
           props={{
             onChange: (e) => {
               weight.current = e.target.value;
-              localStorage.setItem("weight", e.target.value);
+              if (typeof window !== "undefined") {
+                localStorage.setItem("weight", e.target.value);
+              }
             },
           }}
         />
@@ -49,7 +53,9 @@ function UploadFoot() {
           label="سایز کفش"
           props={{
             onChange: (e) => {
-              localStorage.setItem("feetSize", e.target.value);
+              if (typeof window !== "undefined") {
+                localStorage.setItem("feetSize", e.target.value);
+              }
             },
             min: 30,
             max: 50,
@@ -96,15 +102,17 @@ function RightFoot() {
   const up = useRef<string>();
   const inside = useRef<string>();
   if (front && back && up && inside) {
-    localStorage.setItem(
-      "rightFoot",
-      JSON.stringify({
-        front: front,
-        back: back,
-        up: up,
-        inside: inside,
-      })
-    );
+    if (typeof window !== "undefined") {
+      localStorage.setItem(
+        "rightFoot",
+        JSON.stringify({
+          front: front,
+          back: back,
+          up: up,
+          inside: inside,
+        })
+      );
+    }
   }
   return (
     <div className="grid justify-center align-middle grid-cols-2 gap-2 lg:grid-cols-4">
@@ -138,15 +146,17 @@ function LeftFoot() {
   const up = useRef<string>();
   const inside = useRef<string>();
   if (front && back && up && inside) {
-    localStorage.setItem(
-      "leftFoot",
-      JSON.stringify({
-        front: front,
-        back: back,
-        up: up,
-        inside: inside,
-      })
-    );
+    if (typeof window !== "undefined") {
+      localStorage.setItem(
+        "leftFoot",
+        JSON.stringify({
+          front: front,
+          back: back,
+          up: up,
+          inside: inside,
+        })
+      );
+    }
   }
   return (
     <div className="grid justify-center align-middle grid-cols-2 gap-2 lg:grid-cols-4">
@@ -182,14 +192,15 @@ function Knees() {
       (front.current?.length as number) > 0 &&
       (back.current?.length as number) > 0
     ) {
-      localStorage.setItem(
-        "knees",
-        JSON.stringify({
-          front: front,
-          back: back,
-        })
-      );
-      console.log(JSON.parse(localStorage.getItem("knees") as string));
+      if (typeof window !== "undefined") {
+        localStorage.setItem(
+          "knees",
+          JSON.stringify({
+            front: front,
+            back: back,
+          })
+        );
+      }
     }
   }, [front, back]);
 

@@ -10,7 +10,9 @@ import { useEffect, useState } from "react";
 
 const VerficationData = () => {
   const router = useRouter();
-  const time = Number(localStorage.getItem("remaining")) / 1000;
+  const time =
+    Number(typeof window !== "undefined" && localStorage.getItem("remaining")) /
+    1000;
   console.log(time);
   const [remaining, setRemaining] = useState<number>(time);
   const [code, setCode] = useState("");
@@ -22,14 +24,19 @@ const VerficationData = () => {
     const res = fetchData("/user/login", {
       method: "post",
       data: {
-        field: localStorage.getItem("field"),
+        field:
+          typeof window !== "undefined" &&
+          typeof window !== "undefined" &&
+          localStorage.getItem("field"),
         code: code,
       },
     })
       .then((res) => res)
       .then((data) => {
         console.log(data);
-        localStorage.setItem("token", data.token);
+        if (typeof window !== "undefined") {
+          localStorage.setItem("token", data.token);
+        }
         router.push("/");
       });
   }
