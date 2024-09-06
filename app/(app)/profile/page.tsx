@@ -1,11 +1,49 @@
+"use client";
 import Input from "@/components/tools/input/Input";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import Avatar from "@/public/image/Avatar.svg";
 import Select from "@/components/tools/input/Select";
 import TextArea from "@/components/tools/input/TextArea";
+import { fetchData } from "@/utils/fetch";
+
+type profileType = {
+  address: string;
+  appNotify: boolean;
+  birthday: string;
+  email: string;
+  gender: number;
+  name: string;
+  phone: string;
+  smsNotify: boolean;
+};
 
 function Profile() {
+  const token = localStorage.getItem("token");
+  const profile = useRef<profileType>();
+  useEffect(() => {
+    getProfile();
+  }, []);
+  function getProfile() {
+    try {
+      const res = fetchData("/user/profile", {
+        method: "get",
+        headers: {
+          origin: location.hostname ?? "",
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then((res) => {
+          return res;
+        })
+        .then((data) => {
+          console.log(data);
+          profile.current = data.user;
+        });
+    } catch (e) {
+      console.log(e);
+    }
+  }
   return (
     <div className="bg-white m-3 p-4 w-[90%] lg:w-[70%] lg:h-[85%] rounded-xl flex flex-col justify-start items-center">
       <section>
@@ -26,7 +64,12 @@ function Profile() {
           <Input props={{ type: "date" }} label="تاریخ تولد" />
         </div>
         <Input
-          props={{ type: "text", dir: "ltr", maxLength: 11 }}
+          props={{
+            type: "text",
+            dir: "ltr",
+            maxLength: 11,
+            placeholder: profile.current?.phone,
+          }}
           label="شماره همراه"
         />
         <TextArea props={{}} label="آدرس" />

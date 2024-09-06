@@ -6,30 +6,47 @@ import NumberInput from "@/components/tools/input/NumberInput";
 import SubmitButton from "@/components/tools/button/SubmitButton";
 import { fetchData } from "@/utils/fetch";
 import { useRouter } from "next/navigation";
+import { AxiosError, AxiosResponse } from "axios";
+import { message } from "antd";
 
 const LoginData = () => {
   // const [remaining,setRemaining] = useState<number>(0);
   const route = useRouter();
   function Login(formData: FormData) {
     console.log(formData);
+    formData.append("hash", "web-app");
     try {
       const response = fetchData("/user/request", {
         method: "post",
         data: formData,
       })
         .then((data) => {
-          if (data.status === 200) {
+          console.log("axios res ", data);
+          if (data) {
             return data;
+          } else {
+            message.error("شماره همراه درست وارد نشده است");
           }
         })
         .then((resData) => {
           console.log("response data :", resData);
           // setRemaining(resData.remaining)
           localStorage.setItem("remaining", resData.remaining);
+          localStorage.setItem("field", formData.get("field") as string);
           route.push("/verfication");
+        })
+        .catch((reason: AxiosError) => {
+          console.log(reason);
+          if (reason.status === 400) {
+            message.error("شماره همراه درست وارد نشده است");
+          } else {
+            // Handle else
+          }
+          console.log(reason.message);
         });
       console.log("main res :", response);
     } catch (e) {
+      message.error("شماره همراه درست وارد نشده است");
       console.log(e);
     }
   }

@@ -1,9 +1,12 @@
-import React, { useState } from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { Flex, message, Upload } from "antd";
 import type { GetProp, UploadProps } from "antd";
 import Image from "next/image";
 import { fetchData } from "@/utils/fetch";
+import { UploadRequestOption } from "rc-upload/lib/interface";
+import { TickCircle } from "iconsax-react";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
@@ -25,24 +28,92 @@ const beforeUpload = (file: FileType) => {
   return isJpgOrPng && isLt2M;
 };
 
-const FileInput = ({ label }: { label: string }) => {
+const FileInput = ({
+  label,
+  setImage,
+  imgTitle,
+}: {
+  label: string;
+  setImage?: string;
+  imgTitle: string;
+}) => {
   const [loading, setLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState<string>();
+
+  const token = localStorage.getItem("token");
 
   const handleChange: UploadProps["onChange"] = (info) => {
     if (info.file.status === "uploading") {
       setLoading(true);
-      return;
     }
     if (info.file.status === "done") {
-      const res = fetchData("/api/upload/pic", {
-        method: "post",
-        data: info.file,
-      });
-      console.log(res);
     }
   };
+  useEffect(() => {
+    if (localStorage.getItem(imgTitle) !== null) {
+      getImage();
+    }
+  }, []);
+  function getImage() {
+    try {
+      fetchData(`/upload/pic/${localStorage.getItem(imgTitle)}`, {
+        method: "get",
+        headers: {
+          origin: location.hostname ?? "",
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then((res) => {
+          return res;
+        })
+        .then((data) => {
+          // const byteCharacters = atob(data);
+          // const byteNumbers = new Array(byteCharacters.length);
+          // for (let i = 0; i < byteCharacters.length; i++) {
+          //   byteNumbers[i] = byteCharacters.charCodeAt(i);
+          // }
+          // const byteArray = new Uint8Array(byteNumbers);
 
+          // // Create a Blob from the byte array
+          // const blob = new Blob([byteArray], { type: "image/png" });
+          // const imageUrlBlob = URL.createObjectURL(blob);
+          // setImageUrl(imageUrlBlob);
+
+          console.log(data);
+        });
+      // console.log(res);
+    } catch (e) {
+      console.log(e);
+    }
+  }
+  const custom_request = async (props: UploadRequestOption<any>) => {
+    const formData = new FormData();
+    formData.append("", props.file);
+    try {
+      const res = await fetchData("/upload/pic", {
+        method: "post",
+        headers: {
+          "Content-Type": "multipart/form-data",
+          origin: location.hostname ?? "",
+          Authorization: `Bearer ${token}`,
+        },
+        data: formData,
+      })
+        .then((res) => {
+          return res;
+        })
+        .then((data) => {
+          setImage = data.msg;
+          localStorage.setItem(imgTitle, data.msg);
+          setLoading(false);
+          setImageUrl(data.msg);
+          return data;
+        });
+      console.log(res);
+    } catch (e) {
+      console.log(e);
+    }
+  };
   const uploadButton = (
     <button style={{ border: 0, background: "none" }} type="button">
       {loading ? <LoadingOutlined /> : <PlusOutlined />}
@@ -53,6 +124,7 @@ const FileInput = ({ label }: { label: string }) => {
   return (
     <Flex gap="middle" wrap>
       <Upload
+        customRequest={(props) => custom_request(props)}
         name="avatar"
         listType="picture-card"
         className="avatar-uploader"
@@ -61,11 +133,7 @@ const FileInput = ({ label }: { label: string }) => {
         beforeUpload={beforeUpload}
         onChange={handleChange}
       >
-        {imageUrl ? (
-          <Image src={imageUrl} alt="avatar" style={{ width: "100%" }} />
-        ) : (
-          uploadButton
-        )}
+        {imageUrl ? <TickCircle size={25} variant="Outline" /> : uploadButton}
       </Upload>
     </Flex>
   );

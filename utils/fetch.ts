@@ -1,9 +1,11 @@
+"use client";
 import axios, { AxiosRequestConfig } from "axios";
 
 const axiosInstance = axios.create({
   baseURL: "https://api.parspa-ai.ir",
   headers: {
-    ContentType: "program/json",
+    "Content-Type": "application/json",
+    origin: location.hostname ?? "",
     // Add all custom headers here
   },
 });

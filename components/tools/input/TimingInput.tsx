@@ -1,31 +1,40 @@
 "use client";
-import React, { ReactHTMLElement, useRef, useState } from "react";
+import React, {
+  Dispatch,
+  ReactHTMLElement,
+  SetStateAction,
+  useRef,
+  useState,
+} from "react";
 
 const TimingInput = ({
   numberOfDigits,
   props,
+  setValue,
 }: {
   numberOfDigits: number;
+  setValue: Dispatch<SetStateAction<string>>;
   props?: React.DetailedHTMLProps<
     React.InputHTMLAttributes<HTMLInputElement>,
     HTMLInputElement
   >;
 }) => {
-  const [otp, setOtp] = useState(new Array(numberOfDigits).fill(""));
+  const otp = useRef(new Array(numberOfDigits).fill(""));
   const [otpError, setOtpError] = useState(null);
   const otpBoxReference = useRef<HTMLInputElement[]>(
     Array(numberOfDigits).fill(null)
   );
 
   function handleChange(value: string, index: number) {
-    let newArr = [...otp];
+    let newArr = [...otp.current];
     newArr[index] = value;
-    setOtp(newArr);
+    otp.current = newArr;
 
     if (value && index < numberOfDigits - 1) {
       otpBoxReference.current[index + 1].focus();
     }
-    console.log(otp);
+    console.log(otp.current);
+    setValue(otp.current.join(""));
   }
 
   function handleBackspaceAndEnter(
@@ -44,7 +53,7 @@ const TimingInput = ({
     <div>
       <div className="relative border border-primary300 p-3 rounded-lg">
         <div>
-          {otp.map((digit, index) => (
+          {otp.current.map((digit, index) => (
             <input
               key={index}
               //   value={digit}

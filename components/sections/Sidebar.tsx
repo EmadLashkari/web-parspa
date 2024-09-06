@@ -21,11 +21,15 @@ function Sidebar() {
       </button>
       <section className="bg-white p-5 w-full h-[70%] rounded-lg flex flex-col justify-start items-center  gap-3 shadow-white-primary shadow-md">
         <Image className="w-20 h-20" src={Logo} alt="logo" />
-        <Item url="" icon={<Direct size={20} />} text="داشبورد" />
-        <Item url="" icon={<ShoppingCart size={20} />} text="درخواست ها" />
-        <Item url="" icon={<Profile size={20} />} text="پروفایل" />
+        <Item url="/" icon={<Direct size={20} />} text="داشبورد" />
         <Item
-          url=""
+          url="/newOrder"
+          icon={<ShoppingCart size={20} />}
+          text="درخواست ها"
+        />
+        <Item url="/profile" icon={<Profile size={20} />} text="پروفایل" />
+        <Item
+          url="/support"
           icon={<Support className="hover:text-white" />}
           text="پشتیبانی"
         />
@@ -46,7 +50,7 @@ function Item({
 }) {
   return (
     <Link
-      href={""}
+      href={url}
       className="w-full flex flex-row justify-end items-center hover:bg-primary hover:text-white gap-3 border text-primary border-primary px-5 py-2 rounded-lg "
     >
       <span className="text-sm">{text}</span>
