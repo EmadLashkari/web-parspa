@@ -14,6 +14,8 @@
     "framer-motion": "^11.3.31",
     "iconsax": "^0.0.1",
     "iconsax-react": "^0.0.8",
+    "jalali-moment": "^3.3.11",
+    "moment-jalali": "^0.3.9",
     "next": "14.2.7",
     "react": "^18",
     "react-dom": "^18"

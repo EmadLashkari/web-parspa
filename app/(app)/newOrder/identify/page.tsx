@@ -5,7 +5,7 @@ import fillQa from "@/public/image/fillQA.png";
 import TextArea from "@/components/tools/input/TextArea";
 import { fetchData } from "@/utils/fetch";
 import Link from "next/link";
-import { Modal } from "antd";
+import { message, Modal } from "antd";
 import { useRouter } from "next/navigation";
 import getHeaders from "@/utils/getHeaders";
 
@@ -47,43 +47,67 @@ export default function Identify() {
   const token = typeof window !== "undefined" && localStorage.getItem("token");
   function sendOrder() {
     try {
-      const res = fetchData("/orders/new", {
-        method: "post",
-        headers: {
-          origin: getHeaders(),
-          Authorization: `Bearer ${token}`,
-        },
-        data: {
-          concerns: checkedBox.current,
-          feetLength: localStorage.getItem("feetLenght"),
-          feetSize: localStorage.getItem("feetSize"),
-          images: {
-            KNEES: {
-              BACK: localStorage.getItem("knees-back"),
-              FRONT: localStorage.getItem("knees-front"),
-            },
-            RIGHT: {
-              UPSIDE: localStorage.getItem("right-up"),
-              BACK: localStorage.getItem("right-back"),
-              FRONT: localStorage.getItem("right-front"),
-              INSIDE: localStorage.getItem("right-inside"),
-            },
-            LEFT: {
-              UPSIDE: localStorage.getItem("left-up"),
-              BACK: localStorage.getItem("left-back"),
-              FRONT: localStorage.getItem("left-front"),
-              INSIDE: localStorage.getItem("left-inside"),
-            },
+      const res = fetchData(
+        "orders/new",
+        {
+          method: "post",
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
-          notes: notes.current,
-          weight: localStorage.getItem("weight"),
+          body: JSON.stringify({
+            concerns: checkedBox.current,
+            feetLength:
+              typeof window !== "undefined" &&
+              localStorage.getItem("feetLenght"),
+            feetSize:
+              typeof window !== "undefined" && localStorage.getItem("feetSize"),
+            images: {
+              KNEES: {
+                BACK:
+                  typeof window !== "undefined" &&
+                  localStorage.getItem("knees-back"),
+                FRONT:
+                  typeof window !== "undefined" &&
+                  localStorage.getItem("knees-front"),
+              },
+              RIGHT: {
+                UPSIDE:
+                  typeof window !== "undefined" &&
+                  localStorage.getItem("right-up"),
+                BACK:
+                  typeof window !== "undefined" &&
+                  localStorage.getItem("right-back"),
+                FRONT:
+                  typeof window !== "undefined" &&
+                  localStorage.getItem("right-front"),
+                INSIDE:
+                  typeof window !== "undefined" &&
+                  localStorage.getItem("right-inside"),
+              },
+              LEFT: {
+                UPSIDE:
+                  typeof window !== "undefined" &&
+                  localStorage.getItem("left-up"),
+                BACK:
+                  typeof window !== "undefined" &&
+                  localStorage.getItem("left-back"),
+                FRONT:
+                  typeof window !== "undefined" &&
+                  localStorage.getItem("left-front"),
+                INSIDE:
+                  typeof window !== "undefined" &&
+                  localStorage.getItem("left-inside"),
+              },
+            },
+            notes: notes.current,
+            weight:
+              typeof window !== "undefined" && localStorage.getItem("weight"),
+          }),
         },
-      })
-        .then((res) => {
-          return res;
-        })
-        .then((data) => {
-          console.log(data);
+        (status) => {
+          message.error("مقادیر را درست وارد کنید");
+        },
+        (data) => {
           Modal.success({
             content: "درخواست شما  با موفقیت ثبت شد",
             direction: "rtl",
@@ -92,8 +116,8 @@ export default function Identify() {
             },
           });
           return data;
-        });
-      console.log(res);
+        }
+      );
     } catch (e) {
       console.log(e);
     }

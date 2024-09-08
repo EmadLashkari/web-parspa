@@ -1,23 +1,34 @@
-"use client";
-import axios, { AxiosRequestConfig } from "axios";
-import getHeaders from "./getHeaders";
-
-const axiosInstance = axios.create({
-  baseURL: "https://api.parspa-ai.ir",
-  headers: {
-    "Content-Type": "application/json",
-    origin: getHeaders(),
-    // Add all custom headers here
-  },
-});
+import getUrl from "./getUrl";
 
 export const fetchData = async (
   url: string,
-  options: AxiosRequestConfig<any> | undefined = {}
+  config: RequestInit,
+  onError: (status: number) => void,
+  onSuccess?: (data: any) => void
 ) => {
   try {
-    const response = await axiosInstance(url, options);
-    return response.data;
+    const response = await fetch(getUrl(url), {
+      method: config.method,
+      body: config.body,
+      headers: {
+        // "Content-Type": "application/json",
+        ...config.headers,
+      },
+    })
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        } else {
+          onError(res.status);
+        }
+      })
+      .then((data) => {
+        if (onSuccess) {
+          onSuccess(data);
+        }
+        return data;
+      });
+    return response;
   } catch (error) {
     console.error("Error retrieving data:", error);
     throw new Error("Could not get data");

@@ -5,7 +5,6 @@ import Image from "next/image";
 import { Collapse, InputNumber } from "antd";
 import FileInput from "@/components/tools/input/FileInput";
 import Input from "@/components/tools/input/Input";
-import SubmitButton from "@/components/tools/button/SubmitButton";
 import Link from "next/link";
 
 function UploadFoot() {

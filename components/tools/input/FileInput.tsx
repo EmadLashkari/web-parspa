@@ -57,31 +57,17 @@ const FileInput = ({
   }, []);
   function getImage() {
     try {
-      fetchData(`/upload/pic/${localStorage.getItem(imgTitle)}`, {
-        method: "get",
-        headers: {
-          origin: getHeaders(),
-          Authorization: `Bearer ${token}`,
+      fetchData(
+        `upload/pic/${localStorage.getItem(imgTitle)}`,
+        {
+          method: "get",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      })
-        .then((res) => {
-          return res;
-        })
-        .then((data) => {
-          // const byteCharacters = atob(data);
-          // const byteNumbers = new Array(byteCharacters.length);
-          // for (let i = 0; i < byteCharacters.length; i++) {
-          //   byteNumbers[i] = byteCharacters.charCodeAt(i);
-          // }
-          // const byteArray = new Uint8Array(byteNumbers);
-
-          // // Create a Blob from the byte array
-          // const blob = new Blob([byteArray], { type: "image/png" });
-          // const imageUrlBlob = URL.createObjectURL(blob);
-          // setImageUrl(imageUrlBlob);
-
-          console.log(data);
-        });
+        (status) => {},
+        (data) => {}
+      );
       // console.log(res);
     } catch (e) {
       console.log(e);
@@ -91,26 +77,24 @@ const FileInput = ({
     const formData = new FormData();
     formData.append("", props.file);
     try {
-      const res = await fetchData("/upload/pic", {
-        method: "post",
-        headers: {
-          "Content-Type": "multipart/form-data",
-          origin: getHeaders(),
-          Authorization: `Bearer ${token}`,
+      const res = await fetchData(
+        "upload/pic",
+        {
+          method: "post",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
         },
-        data: formData,
-      })
-        .then((res) => {
-          return res;
-        })
-        .then((data) => {
+        (error) => {},
+        (data) => {
           setImage = data.msg;
           localStorage.setItem(imgTitle, data.msg);
           setLoading(false);
           setImageUrl(data.msg);
           return data;
-        });
-      console.log(res);
+        }
+      );
     } catch (e) {
       console.log(e);
     }

@@ -12,10 +12,12 @@ const config: Config = {
       current: "currentColor",
       primary: "#28BCBE",
       secondary: "#DEF7F7",
+      "primary-2": "#28BCBE",
       "background-primary": "#fff",
       white: "#fff",
       "white-primary": "#DEF7F7",
       "black-primary": "#104242",
+      "tx-primary": "#187577",
     },
     extend: {
       backgroundImage: {

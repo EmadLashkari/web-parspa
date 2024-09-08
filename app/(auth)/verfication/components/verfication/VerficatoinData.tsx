@@ -4,6 +4,7 @@ import SubmitButton from "@/components/tools/button/SubmitButton";
 import TimingInput from "@/components/tools/input/TimingInput";
 import Logo from "@/public/image/Logo.svg";
 import { fetchData } from "@/utils/fetch";
+import { message } from "antd";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -21,24 +22,31 @@ const VerficationData = () => {
   }, 1000);
 
   function login() {
-    const res = fetchData("/user/login", {
-      method: "post",
-      data: {
-        field:
-          typeof window !== "undefined" &&
-          typeof window !== "undefined" &&
-          localStorage.getItem("field"),
-        code: code,
+    const res = fetchData(
+      "user/login",
+      {
+        method: "post",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({
+          field:
+            typeof window !== "undefined" &&
+            typeof window !== "undefined" &&
+            localStorage.getItem("field"),
+          code: code,
+        }),
       },
-    })
-      .then((res) => res)
-      .then((data) => {
-        console.log(data);
+      (status) => {
+        message.error("کد تایید درست نیست");
+      },
+      (data) => {
         if (typeof window !== "undefined") {
           localStorage.setItem("token", data.token);
         }
         router.push("/");
-      });
+      }
+    );
   }
   return (
     <div className="flex flex-col justify-center items-center h-full gap-10 lg:w-full ">
