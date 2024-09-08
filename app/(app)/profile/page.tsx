@@ -7,6 +7,7 @@ import Select from "@/components/tools/input/Select";
 import TextArea from "@/components/tools/input/TextArea";
 import { fetchData } from "@/utils/fetch";
 import getHeaders from "@/utils/getHeaders";
+import { message } from "antd";
 
 type profileType = {
   address: string;
@@ -27,20 +28,23 @@ function Profile() {
   }, []);
   function getProfile() {
     try {
-      const res = fetchData("/user/profile", {
-        method: "get",
-        headers: {
-          origin: getHeaders(),
-          Authorization: `Bearer ${token}`,
+      const res = fetchData(
+        "user/profile",
+        {
+          method: "get",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-type": "applicaiton/json",
+          },
         },
-      })
-        .then((res) => {
-          return res;
-        })
-        .then((data) => {
+        (stauts) => {
+          message.error("دریافت اطلاعات ممکن نیست");
+        },
+        (data) => {
           console.log(data);
           profile.current = data.user;
-        });
+        }
+      );
     } catch (e) {
       console.log(e);
     }
