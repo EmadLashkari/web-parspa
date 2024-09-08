@@ -53,6 +53,7 @@ export default function Identify() {
           method: "post",
           headers: {
             Authorization: `Bearer ${token}`,
+            "Content-type": "application/json",
           },
           body: JSON.stringify({
             concerns: checkedBox.current,
