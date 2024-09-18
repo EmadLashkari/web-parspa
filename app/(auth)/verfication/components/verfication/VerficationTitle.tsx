@@ -4,7 +4,7 @@ import LoginImg from "@/public/image/VerficationImg.svg";
 
 const VerficationTitle = () => {
   return (
-    <div className="lg:w-full lg:h-full flex flex-col justify-end items-center lg:bg-gradient-to-b lg:from-primary900 lg:to-white lg:shadow-xl lg:shadow-primary900">
+    <div className="lg:w-full lg:h-full flex flex-col justify-end items-center lg:bg-gradient-to-b lg:from-primary lg:to-white lg:shadow-xl lg:shadow-primary">
       <div className="hidden lg:flex flex-col justify-center items-center pb-6">
         <h1 className="text-white text-[30px] font-bold">
           به پارس پا خوش آمدید

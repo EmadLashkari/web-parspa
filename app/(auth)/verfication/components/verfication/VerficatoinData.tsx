@@ -1,27 +1,73 @@
 "use client";
-
 import SubmitButton from "@/components/tools/button/SubmitButton";
 import TimingInput from "@/components/tools/input/TimingInput";
 import Logo from "@/public/image/Logo.svg";
 import { fetchData } from "@/utils/fetch";
-import { message } from "antd";
+import { message, Spin } from "antd";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import Cookies from "js-cookie";
+
+interface CountdownProps {
+  expireTime: number; // Expiration time in milliseconds
+}
+
+interface TimeLeft {
+  minutes?: number;
+  seconds?: number;
+}
 
 const VerficationData = () => {
   const router = useRouter();
-  const time =
-    Number(typeof window !== "undefined" && localStorage.getItem("remaining")) /
-    1000;
-  console.log(time);
-  const [remaining, setRemaining] = useState<number>(time);
+  const [onLoading, setLoading] = useState<boolean>(false);
   const [code, setCode] = useState("");
-  setTimeout(() => {
-    setRemaining(remaining - 1);
-  }, 1000);
+  const expireTime =
+    typeof window !== "undefined"
+      ? new Date().getTime() + Number(localStorage.getItem("remaining"))
+      : 300;
+  const calculateTimeLeft = () => {
+    const difference = expireTime - +new Date(); // Subtract current time from expiration time
+    let timeLeft = {};
+
+    if (difference > 0) {
+      timeLeft = {
+        minutes: Math.floor((difference / 1000 / 60) % 60),
+        seconds: Math.floor((difference / 1000) % 60),
+      };
+    } else {
+      router.push("/login");
+    }
+
+    return timeLeft;
+  };
+
+  const [timeLeft, setTimeLeft] = useState<TimeLeft>(calculateTimeLeft());
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTimeLeft(calculateTimeLeft());
+    }, 1000);
+
+    // Cleanup the interval when the component is unmounted or expireTime changes
+    return () => clearInterval(interval);
+  }, []);
+
+  const timerComponents: JSX.Element[] = [];
+
+  (Object.keys(timeLeft) as (keyof TimeLeft)[]).forEach((interval) => {
+    if (!timeLeft[interval]) return;
+
+    timerComponents.push(
+      <span key={interval}>
+        {timeLeft[interval]}
+        {":"}
+      </span>
+    );
+  });
 
   function login() {
+    setLoading(true);
     const res = fetchData(
       "user/login",
       {
@@ -39,11 +85,14 @@ const VerficationData = () => {
       },
       (status) => {
         message.error("کد تایید درست نیست");
+        setLoading(false);
       },
       (data) => {
         if (typeof window !== "undefined") {
           localStorage.setItem("token", data.token);
         }
+        Cookies.set("token", data.token);
+        setLoading(false);
         router.push("/");
       }
     );
@@ -54,11 +103,15 @@ const VerficationData = () => {
       <h1 className="font-bold text-[20px]">ثبت نام با شماره همراه</h1>
       <div className="flex flex-col justify-center items-center gap-5">
         <TimingInput setValue={setCode} numberOfDigits={4} />
-        <div className="flex gap-3">
-          <span>زمان باقی مانده</span>
-          <span>{remaining}</span>
+        <div className="flex flex-row justify-center items-center gap-2 text-tx-primary">
+          <span className="text-sm">زمان باقی مانده</span>
+          <span className="text-sm">
+            {timeLeft["minutes"]} : {timeLeft["seconds"]}
+          </span>
         </div>
-        <SubmitButton props={{ onClick: login }}>ثبت و ادامه</SubmitButton>
+        <Spin spinning={onLoading}>
+          <SubmitButton props={{ onClick: login }}>ثبت و ادامه</SubmitButton>
+        </Spin>
       </div>
     </div>
   );

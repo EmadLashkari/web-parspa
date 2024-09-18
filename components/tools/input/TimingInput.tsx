@@ -58,13 +58,18 @@ const TimingInput = ({
               key={index}
               //   value={digit}
               maxLength={1}
-              type="text"
+              type="tel"
+              inputMode="numeric"
+              pattern="[0-9]*"
               onChange={(e) => handleChange(e.target.value, index)}
               onKeyUp={(e) => handleBackspaceAndEnter(e, index)}
               ref={(reference) => {
                 otpBoxReference.current[index] = reference as HTMLInputElement;
               }}
               className={`w-10 h-auto text-black px-4 outline-none border-b-2 border-primary300 m-1`}
+              style={{
+                WebkitAppearance: "none",
+              }}
             />
           ))}
         </div>

@@ -19,6 +19,7 @@ export const fetchData = async (
         if (res.ok) {
           return res.json();
         } else {
+          console.log("status error : ", res.status);
           onError(res.status);
         }
       })
@@ -30,7 +31,7 @@ export const fetchData = async (
       });
     return response;
   } catch (error) {
-    console.error("Error retrieving data:", error);
+    // console.error("Error retrieving data:", error);
     throw new Error("Could not get data");
   }
 };

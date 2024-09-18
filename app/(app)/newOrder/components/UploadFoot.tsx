@@ -2,16 +2,55 @@
 import React, { useEffect, useRef, useState } from "react";
 import footwear from "@/public/image/footwear.png";
 import Image from "next/image";
-import { Collapse, InputNumber } from "antd";
+import { Collapse, InputNumber, message } from "antd";
 import FileInput from "@/components/tools/input/FileInput";
 import Input from "@/components/tools/input/Input";
 import Link from "next/link";
+import { z } from "zod";
+import { useRouter } from "next/navigation";
+
+type errors = {
+  footlength?: string[] | undefined;
+  weight?: string[] | undefined;
+  feetSize?: string[] | undefined;
+};
+
+const schema = z.object({
+  footlength: z
+    .number()
+    .min(30, "سایز پا کمتر از ۳۰ مجاز نیست")
+    .max(50, "سایز پا بیشتر از ۵۰  مجاز نیست"),
+  weight: z.number({ required_error: "فیلد وزن خالی است" }),
+  feetSize: z
+    .number()
+    .min(30, "سایز کفش کمتر از ۳۰ مجاز نیست")
+    .max(50, "سایز کفش بیشتر از ۵۰  مجاز نیست"),
+});
 
 function UploadFoot() {
+  const route = useRouter();
   const [footSize, setFootSize] = useState<string>();
+  const [errors, setErrors] = useState<boolean>(true);
   const footLenght = useRef();
   const weight = useRef<string>();
   const knees = useRef();
+  function checkValidate(): boolean {
+    const validatedFields = schema.safeParse({
+      footlength: Number(localStorage.getItem("feetLenght")),
+      weight: Number(localStorage.getItem("weight")),
+      feetSize: Number(localStorage.getItem("feetSize")),
+    });
+    if (!validatedFields.success) {
+      setErrors(true);
+      message.error(validatedFields.error.flatten().fieldErrors.feetSize);
+      message.error(validatedFields.error.flatten().fieldErrors.footlength);
+      message.error(validatedFields.error.flatten().fieldErrors.weight);
+      return false;
+    } else {
+      setErrors(false);
+      return true;
+    }
+  }
   return (
     <div className="bg-white-primary my-3 rounded-lg p-5 flex flex-col gap-5">
       <span dir="rtl" className="">
@@ -39,26 +78,22 @@ function UploadFoot() {
       <div className="flex flex-row gap-2">
         <Input
           label="وزن بدن"
-          props={{
-            onChange: (e) => {
-              weight.current = e.target.value;
-              if (typeof window !== "undefined") {
-                localStorage.setItem("weight", e.target.value);
-              }
-            },
+          onChange={(e) => {
+            weight.current = e.target.value;
+            if (typeof window !== "undefined") {
+              localStorage.setItem("weight", e.target.value);
+            }
           }}
         />
         <Input
           label="سایز کفش"
-          props={{
-            onChange: (e) => {
-              if (typeof window !== "undefined") {
-                localStorage.setItem("feetSize", e.target.value);
-              }
-            },
-            min: 30,
-            max: 50,
+          onChange={(e) => {
+            if (typeof window !== "undefined") {
+              localStorage.setItem("feetSize", e.target.value);
+            }
           }}
+          min={30}
+          max={50}
         />
       </div>
       <div dir="rtl" className="">
@@ -85,12 +120,18 @@ function UploadFoot() {
           ]}
         />
       </div>
-      <Link
-        className="bg-primary text-white p-3 rounded-lg w-20 flex justify-center"
-        href={"/newOrder/identify"}
+      <button
+        className={` ${
+          errors ? "bg-primary" : "bg-primary-3"
+        } text-white p-3 rounded-lg w-20 flex justify-center`}
+        onClick={() => {
+          if (checkValidate()) {
+            route.push("/newOrder/identify");
+          }
+        }}
       >
         بعدی
-      </Link>
+      </button>
     </div>
   );
 }

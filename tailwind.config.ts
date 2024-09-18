@@ -15,9 +15,13 @@ const config: Config = {
       "primary-2": "#28BCBE",
       "background-primary": "#fff",
       white: "#fff",
-      "white-primary": "#DEF7F7",
+      "white-primary": "#eaffff",
       "black-primary": "#104242",
       "tx-primary": "#187577",
+      "primary-3": "#BCF0F1",
+      "primary-5": "#89E4E6",
+      "primary-7": "#57D9DB",
+      "red-error": "#FF0000",
     },
     extend: {
       backgroundImage: {

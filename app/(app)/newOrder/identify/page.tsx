@@ -149,10 +149,8 @@ export default function Identify() {
       </div>
       <TextArea
         label="یادداشت ها"
-        props={{
-          onChange: (e) => {
-            notes.current = e.target.value;
-          },
+        onChange={(e) => {
+          notes.current = e.target.value;
         }}
       />
       <div className="flex justify-between gap-4">
